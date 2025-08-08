@@ -11,6 +11,13 @@ export default defineNuxtConfig({
   
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
+  runtimeConfig: {
+    public: {
+      NUXT_API_KEY: process.env.NUXT_API_KEY,
+      SUPABASE_URL: process.env.SUPABASE_URL,
+      SUPABASE_KEY: process.env.SUPABASE_KEY
+    }
+  },
   ssr:false,
   app: {
     head: {
