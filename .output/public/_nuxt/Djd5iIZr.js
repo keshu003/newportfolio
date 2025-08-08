@@ -1,0 +1,1 @@
+import{_ as t,c as s,a as n,o}from"./Cm9aeTDP.js";const r={},c={class:"min-h-screen bg-gray-900 text-white px-6 md:px-16 py-10"};function a(l,e){return o(),s("div",c,e[0]||(e[0]=[n("div",null,null,-1)]))}const d=t(r,[["render",a]]);export{d as default};
