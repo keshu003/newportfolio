@@ -56,20 +56,20 @@
     <section class="bg-gray-900 text-white py-8 scroll-mt-40 mt-20" id="contact">
       <div class="text-center">
         <h2 class="text-4xl font-bold mb-4">Contact Me</h2>
-        <a
-          href="mailto:keshavumesh001@gmail.com"
-          class="text-2xl text-blue-400 underline break-words"
-        >
-          keshavumesh001@gmail.com
-        </a>
+        <div class="text-center mb-4">
+          <i class="fa-solid fa-envelope text-5xl text-blue-400 "></i>
+        </div>
+        
+        
       </div>
 
-      <form class="w-full max-w-3xl mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form @submit.prevent="onSubmit" class="w-full max-w-3xl mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="col-span-1">
           <label class="block text-sm text-blue-400 mb-1">Name</label>
           <input
             type="text"
             placeholder="Your Name"
+            v-model="name"
             class="w-full bg-transparent border-b-2 border-blue-500 text-white placeholder-gray-400 outline-none py-2 focus:border-blue-300 transition-colors"
           />
         </div>
@@ -79,6 +79,7 @@
           <input
             type="email"
             placeholder="Your Email ID"
+            v-model="email"
             class="w-full bg-transparent border-b-2 border-blue-500 text-white placeholder-gray-400 outline-none py-2 focus:border-blue-300 transition-colors"
           />
         </div>
@@ -88,6 +89,7 @@
           <textarea
             rows="5"
             placeholder="Your message..."
+            v-model="message"
             class="w-full bg-transparent border-b-2 border-blue-500 text-white placeholder-gray-400 outline-none py-2 resize-none focus:border-blue-300 transition-colors"
           ></textarea>
         </div>
@@ -100,6 +102,7 @@
             Submit
           </button>
         </div>
+        <p v-if="statusMessage" class="col-span-2 text-center text-sm" :class="{'text-green-500': statusMessage.includes('success'), 'text-red-500': statusMessage.includes('error')}">{{ statusMessage }}</p>
       </form>
     </section>
   </div>
@@ -110,6 +113,37 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 // Mobile menu state
 const isMobileMenuOpen = ref(false)
+
+// Form fields
+const name = ref('')
+const email = ref('')
+const message = ref('')
+const statusMessage = ref('')
+
+// Supabase client
+const { $supabase } = useNuxtApp()
+
+// Handle form submission
+const onSubmit = async () => {
+  statusMessage.value = 'Sending...'
+  try {
+    const { error } = await $supabase
+      .from('contacts') // Replace 'contacts' with your table name
+      .insert([{ name: name.value, email: email.value, message: message.value }])
+
+    if (error) {
+      throw error
+    }
+
+    statusMessage.value = 'Message sent successfully!'
+    name.value = ''
+    email.value = ''
+    message.value = ''
+  } catch (error) {
+    statusMessage.value = `Error: ${error.message}`
+    console.error('Error submitting form:', error)
+  }
+}
 
 // Toggle mobile menu
 const toggleMobileMenu = () => {
